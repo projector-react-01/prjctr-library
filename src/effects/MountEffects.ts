@@ -5,7 +5,7 @@ import { useDIContainer } from '../di/DIContainerContext';
 
 export const MountEffects: React.FC = () => {
     const container = useDIContainer();
-    const [effects] = useState(() => container.resolve('effects') as readonly Effect[]);
+    const [effects] = useState(() => container.resolve('Effects') as readonly Effect[]);
 
     useEffect(() => {
         const subscription = merge(effects.map(({ effect }) => effect())).subscribe();

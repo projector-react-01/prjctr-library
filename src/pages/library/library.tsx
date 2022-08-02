@@ -17,8 +17,6 @@ type AuthService = {
 export function createLibraryState(
     authService: AuthService
 ): ComposeFunction<object, LibraryViewProps> {
-    authService.refreshToken();
-
     return () => ({
         props: {
             isAuthenticated: [authService.isAuthenticated$, false],
