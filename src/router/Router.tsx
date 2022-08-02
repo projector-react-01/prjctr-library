@@ -1,13 +1,13 @@
 import { FC, useContext } from 'react';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import { RouteName, RouterContext, RouterProvider } from '../../Router/RouterContext';
-import { Library } from '../../pages/library/library';
-import { Login } from '../../pages/auth/login/login';
-import { Registration } from '../../pages/auth/registration/registration';
-import { Video } from '../../pages/library/video/video';
-import { NotFound } from '../../pages/not-found/not-found';
+import { RouteName, RouterContext, RouterProvider } from './RouterContext';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Library } from '../pages/library/library';
+import { Login } from '../pages/auth/login/login';
+import { Registration } from '../pages/auth/registration/registration';
+import { Video } from '../pages/library/video/video';
+import { NotFound } from '../pages/not-found/not-found';
 
-export const AppRouter: FC = () => {
+export const Router: FC = () => {
     const { getPath } = useContext(RouterContext);
 
     return (

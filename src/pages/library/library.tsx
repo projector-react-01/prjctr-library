@@ -1,6 +1,6 @@
 import { LibraryView, LibraryViewProps } from './libraryView';
-import { diInject } from '../../HOC/Incjector';
 import { Observable } from 'rxjs';
+import { ComposeFunction, connect } from '../../connect';
 
 export type Credentials = {
     readonly username: string;
@@ -14,13 +14,19 @@ type AuthService = {
     readonly refreshToken: () => void;
 };
 
-export function createLibraryState(authService: AuthService): LibraryViewProps {
+export function createLibraryState(
+    authService: AuthService
+): ComposeFunction<object, LibraryViewProps> {
     authService.refreshToken();
-    return {
-        isAuthenticated$: authService.isAuthenticated$,
-        onLogin: authService.login,
-        onLogout: authService.logout
-    };
+
+    return () => ({
+        props: {
+            isAuthenticated: [authService.isAuthenticated$, false],
+            onLogin: authService.login,
+            onLogout: authService.logout
+        },
+        effects: []
+    });
 }
 
-export const Library = diInject(LibraryView, 'libraryState');
+export const Library = connect(LibraryView, 'libraryState');

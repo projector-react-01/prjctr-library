@@ -1,24 +1,34 @@
-import { createFilterParamsService } from './Library/filter-params-service';
-import { createFilterResultService } from './Library/filter-result-service';
-import { createFilterService } from './Library/filter-service';
-import { createAuthService } from './Auth/auth-service';
+import { createFilterParamsService } from './library/filter-params-service';
+import { createFilterResultService } from './library/filter-result-service';
+import { createFilterService } from './library/filter-service';
+import { AuthService, createAuthService } from './auth/auth-service';
 import { createAxiosHTTPService } from './api/api-service';
 import { createLibraryState } from './pages/library/library';
-import { asFunction, createContainer, InjectionMode } from 'awilix';
-import { createAuthState } from './Auth/Auth';
+import { asFunction, AwilixContainer } from 'awilix';
+import { createAuthState } from './auth/Auth';
+import { createSetAuthEffect } from './auth/set-auth-effect';
 
-const container = createContainer({
-    injectionMode: InjectionMode.CLASSIC
-});
+function registerEffects(container: AwilixContainer) {
+    container.register({
+        authEffect: asFunction((authService: AuthService) =>
+            createSetAuthEffect(authService.refreshToken)
+        )
+    });
+}
 
-container.register({
-    filterParams: asFunction(createFilterParamsService),
-    filterResult: asFunction(createFilterResultService),
-    apiService: asFunction(createAxiosHTTPService),
-    authService: asFunction(createAuthService),
-    filterService: asFunction(createFilterService),
-    libraryState: asFunction(createLibraryState),
-    authState: asFunction(createAuthState)
-});
+export function registerDependencies(container: AwilixContainer): void {
+    registerEffects(container);
 
-export default container;
+    container.register({
+        filterParams: asFunction(() => createFilterParamsService()).singleton(),
+        filterResult: asFunction(() => createFilterResultService()).singleton(),
+        apiService: asFunction(() => createAxiosHTTPService()).singleton(),
+        authService: asFunction(apiService => createAuthService(apiService)).singleton(),
+        filterService: asFunction((filterParamsService, filterResultService, apiService) =>
+            createFilterService(filterParamsService, filterResultService, apiService)
+        ).singleton(),
+        libraryState: asFunction(authService => createLibraryState(authService)).singleton(),
+        authState: asFunction(authService => createAuthState(authService)).singleton(),
+        effects: asFunction(() => []).singleton()
+    });
+}

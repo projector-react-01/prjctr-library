@@ -1,5 +1,6 @@
 import { map, merge, Observable, ReplaySubject, scan, Subject, switchMap } from 'rxjs';
 import { APIService } from '../api/api-service';
+import { assertNever } from '../ts-utils';
 
 export type AuthCredentials = {
     readonly username: string;
@@ -196,7 +197,7 @@ export function createAuthService(apiService: APIService): AuthService {
                     };
                 }
                 default:
-                    return state;
+                    return assertNever(event);
             }
         }, initialState)
     );

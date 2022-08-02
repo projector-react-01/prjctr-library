@@ -1,17 +1,13 @@
 import { FC } from 'react';
 import { Credentials } from './library';
-import { Observable } from 'rxjs';
-import { useObservableState } from 'observable-hooks';
 
 export type LibraryViewProps = {
-    isAuthenticated$: Observable<boolean>;
+    isAuthenticated: boolean;
     onLogin: (credentials: Credentials) => void;
     onLogout: () => void;
 };
 
-export const LibraryView: FC<LibraryViewProps> = ({ isAuthenticated$, onLogin, onLogout }) => {
-    const isAuthenticated = useObservableState(isAuthenticated$, false);
-
+export const LibraryView: FC<LibraryViewProps> = ({ isAuthenticated, onLogin, onLogout }) => {
     const mockUser = {
         username: 'projector_user',
         password: 'projector'
@@ -24,11 +20,11 @@ export const LibraryView: FC<LibraryViewProps> = ({ isAuthenticated$, onLogin, o
             <h2>isAuthenticated:{isAuthenticated ? 'true' : 'false'}</h2>
 
             {!isAuthenticated ? (
-                <button type="button" onClick={() => onLogin(mockUser)}>
+                <button type='button' onClick={() => onLogin(mockUser)}>
                     Submit Login
                 </button>
             ) : (
-                <button type="button" onClick={onLogout}>
+                <button type='button' onClick={onLogout}>
                     Submit Logout
                 </button>
             )}
